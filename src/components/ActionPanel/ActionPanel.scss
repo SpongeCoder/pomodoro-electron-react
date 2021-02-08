@@ -1,0 +1,11 @@
+.action-panel {
+  &__center {
+  }
+
+  &__footer {
+    width: 100vw;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+}
