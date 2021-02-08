@@ -46,7 +46,7 @@ $primary-color-span: #3c4761;
   }
 
   position: relative;
-  font-size: 160px;
+  font-size: 200px;
   width: 1em;
   height: 1em;
   border-radius: 50%;
@@ -168,5 +168,20 @@ $primary-color-span: #3c4761;
         color: $primary-color-span;
       }
     }
+  }
+}
+
+.cr-timer {
+  position: relative;
+
+  &__type {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 20%;
+    color: black;
+    font-size: 0.1em;
+    text-align: center;
+    z-index: 10;
   }
 }

@@ -1,31 +1,41 @@
 import { Action/* , Dispatch */ } from 'redux';
-
-export const ON_SET_SHOW_SETTINGS = 'ON_SET_SHOW_SETTINGS';
-export const ON_SET_IS_PLAY = 'ON_SET_IS_PLAY';
+import * as TYPES from './constants';
 
 export interface IOnSetShowSettings extends Action {
-  type: typeof ON_SET_SHOW_SETTINGS,
+  type: typeof TYPES.ON_SET_SHOW_SETTINGS,
   value: boolean
 }
 export function onSetShowSettings(value: boolean): IOnSetShowSettings {
   return {
-    type: ON_SET_SHOW_SETTINGS,
+    type: TYPES.ON_SET_SHOW_SETTINGS,
     value
   }
 }
 
 export interface IOnSetIsPlay extends Action {
-  type: typeof ON_SET_IS_PLAY,
+  type: typeof TYPES.ON_SET_IS_PLAY,
   value: boolean
 }
 export function onSetIsPlay(value: boolean): IOnSetIsPlay {
   return {
-    type: ON_SET_IS_PLAY,
+    type: TYPES.ON_SET_IS_PLAY,
     value
   }
 }
 
-export type MainActions = IOnSetShowSettings | IOnSetIsPlay;
+
+export type ChangeTimeTypeActionType = {
+  type: typeof TYPES.ON_CHANGE_TYPE_TIME,
+  value: string
+}
+export function onChangeTimeType(value: string): ChangeTimeTypeActionType {
+  return {
+    type: TYPES.ON_CHANGE_TYPE_TIME,
+    value
+  }
+}
+
+export type MainActions = IOnSetShowSettings | IOnSetIsPlay | ChangeTimeTypeActionType;
 
 
 /* export function actionOnSetShowSettings(value: boolean) {

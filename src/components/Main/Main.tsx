@@ -4,27 +4,27 @@ import { connect } from 'react-redux';
 import Header from '../Header/Header';
 import CircleTimer from '../CircleTimer/CircleTimer';
 import ActionPanel from '../ActionPanel/ActionPanel';
-import { onSetShowSettings, onSetIsPlay } from '../../reducers/main/actions';
+import Settings from '../Settings/Settings';
+import { onSetShowSettings, onSetIsPlay, onChangeTimeType } from '../../reducers/main/actions';
 import { onSetSound } from '../../reducers/settings/actions';
 import Timer from '../../shared/Timer';
 import { MainState } from '../../reducers/main/main';
 import { SettingsState } from '../../reducers/settings/settings';
+import './Main.scss';
 
 type MainStateComp = {
-  time: number
+  percent: number,
+  time: number,
+  currentRound: number,
 }
 
 type MainProps = {
-  main: {
-    isShowSettings: boolean,
-    isPlay: boolean,
-  },
-  settings: {
-    isSoundOff: boolean
-  },
+  main: MainState,
+  settings: SettingsState,
   setShowSettings: (value: boolean) => void,
   setIsPlay: (value: boolean) => void,
-  setSound: (value: boolean) => void
+  setSound: (value: boolean) => void,
+  setTypeTime: (value: string) => void,
 }
 
 class Main extends Component<MainProps, MainStateComp> {
@@ -34,18 +34,46 @@ class Main extends Component<MainProps, MainStateComp> {
     super(props);
 
     this.state = {
-      time: 10
+      percent: 0,
+      time: 0,
+      currentRound: 1
     }
 
     this.timer = new Timer(1000);
   }
 
   componentDidMount = () => {
-    this.timer.start(this.onChangeTime);
+   this.setDefaultTime();
   }
 
   componentWillUnmount() {
     this.timer.stop();
+  }
+
+  setDefaultTime = () => {
+    const { time } = this.state;
+    const { main, settings } = this.props;
+    const { typeTime, isPlay } = main;
+    const { workTime, smallBreakTime, bigBreakTime } = settings;
+
+    if (isPlay) {
+      this.timer.start(this.onChangeTime);
+    }
+
+    if (time === 0) {
+      switch(typeTime) {
+        case 'work':
+          this.setState({time: workTime, percent: 0});
+          break;
+        case 'small':
+          this.setState({time: smallBreakTime, percent: 0});
+          break;
+        case 'big':
+          this.setState({time: bigBreakTime, percent: 0});
+          break;
+        default:
+      }
+    }
   }
 
   onToggleSettings = () => {
@@ -54,16 +82,42 @@ class Main extends Component<MainProps, MainStateComp> {
   }
 
   onChangeTime = () => {
-    const { time } = this.state;
+    const { time, currentRound } = this.state;
+    const { main, settings, setTypeTime } = this.props;
+    const { typeTime } = main;
+    const { workTime, smallBreakTime, bigBreakTime } = settings;
+    let newPercent: number;
 
-    if (time !== 100)
-      this.setState((state) => {
+    switch(typeTime) {
+      case 'work':
+        newPercent = 100 - ((time - 1) / workTime * 100)
+        break;
+      case 'small':
+        newPercent = 100 - ((time - 1) / smallBreakTime * 100)
+        break;
+      case 'big':
+        newPercent = 100 - ((time - 1) / bigBreakTime * 100)
+        break;
+      default:
+        newPercent = 0;
+    }
+
+    if (time === 0) {
+      if (typeTime === 'work') setTypeTime('small');
+      if (typeTime === 'small') setTypeTime('work');
+      this.setDefaultTime();
+      this.setState({
+        currentRound: currentRound + 1
+      })
+    } else {
+      this.setState(() => {
         return {
-          time: state.time + 1
+          percent: Math.round(newPercent),
+          time: time - 1
         }
       });
-    else
-      this.setState({time: 0})
+    }
+
   }
 
   onClickPlay = () => {
@@ -94,19 +148,23 @@ class Main extends Component<MainProps, MainStateComp> {
 
   render() {
     const { main, settings } = this.props;
-    const { time } = this.state;
+    const { percent, time, currentRound } = this.state;
 
     return (
-      <div>
+      <div className="main">
         <Header
           isShowSettings={main.isShowSettings}
           onToggleSettings={this.onToggleSettings}
         />
-        <CircleTimer time={time} />
+        <CircleTimer
+          time={time}
+          percent={percent}
+          type={main.typeTime}
+        />
         <ActionPanel
           isPlay={main.isPlay}
-          roundNumber={1}
-          roundCount={4}
+          roundNumber={currentRound}
+          roundCount={settings.roundCount}
           soundOff={settings.isSoundOff}
           onClickPlay={this.onClickPlay}
           onClickPause={this.onClickPause}
@@ -115,6 +173,8 @@ class Main extends Component<MainProps, MainStateComp> {
           onClickSoundOff={this.onClickSoundOff}
           onClickSoundOn={this.onClickSoundOn}
         />
+
+        <Settings isShow={main.isShowSettings} />
       </div>
     );
   }
@@ -133,6 +193,7 @@ const mapDispatchToProps = (dispatch: Dispatch) => {
     setShowSettings: (value: boolean) => dispatch(onSetShowSettings(value)),
     setIsPlay: (value: boolean) => dispatch(onSetIsPlay(value)),
     setSound: (value: boolean) => dispatch(onSetSound(value)),
+    setTypeTime: (value: string) => dispatch(onChangeTimeType(value)),
   };
 };
 

@@ -1,0 +1,3 @@
+export const ON_SET_SHOW_SETTINGS = 'ON_SET_SHOW_SETTINGS';
+export const ON_SET_IS_PLAY = 'ON_SET_IS_PLAY';
+export const ON_CHANGE_TYPE_TIME = 'ON_CHANGE_TYPE_TIME';

@@ -46,12 +46,12 @@ const ActionPanel = (props: ActionPanelProps) => {
 
       <div className="action-panel__footer">
         <div className="action-panel__count">
-          <div>{roundNumber} / {roundCount}</div>
+          <div className="action-panel__count-value">{roundNumber} / {roundCount}</div>
           <button type="button" onClick={onClickReset}>
             <i className="las la-redo-alt" />
           </button>
         </div>
-        <div className="action-panel__count">
+        <div className="action-panel__options">
           <button type="button" onClick={onClickNext}>
             <i className="las la-step-forward" />
           </button>

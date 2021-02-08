@@ -1,17 +1,15 @@
-import { Action } from 'redux';
+import * as TYPES from './constants';
 
-export const ON_SET_SOUND = 'ON_SET_SOUND';
-
-export interface IOnSetSound extends Action {
-  type: 'ON_SET_SOUND',
+export type OnSetSoundActionType = {
+  type: typeof TYPES.ON_SET_SOUND,
   value: boolean
 }
-export function onSetSound(value: boolean): IOnSetSound {
+
+export function onSetSound(value: boolean): OnSetSoundActionType {
   return {
-    type: ON_SET_SOUND,
+    type: TYPES.ON_SET_SOUND,
     value
   }
 }
 
-export type SettingsActions = IOnSetSound;
-
+export type SettingsActions = OnSetSoundActionType;

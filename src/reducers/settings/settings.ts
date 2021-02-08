@@ -1,6 +1,7 @@
 import { SettingsActions } from './actions';
+import * as TYPES from './constants';
 
-export interface SettingsState {
+export type SettingsState = {
   workTime: number,
   smallBreakTime: number,
   bigBreakTime: number,
@@ -10,9 +11,9 @@ export interface SettingsState {
 }
 
 const defaultState: SettingsState = {
-  workTime: 45,
-  smallBreakTime: 15,
-  bigBreakTime: 30,
+  workTime: 2700, // 45 min
+  smallBreakTime: 900, // 15 min
+  bigBreakTime: 1800, // 30 min
   roundCount: 6,
   roundBigBreakNumber: 2,
   isSoundOff: false
@@ -20,7 +21,7 @@ const defaultState: SettingsState = {
 
 export function settingsReducer(state = defaultState, action: SettingsActions) {
   switch (action.type) {
-    case 'ON_SET_SOUND':
+    case TYPES.ON_SET_SOUND:
       return {
         ...state,
         isSoundOff: action.value
