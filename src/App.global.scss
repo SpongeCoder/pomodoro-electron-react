@@ -41,9 +41,6 @@ body {
   ); */
   font-family: 'Roboto Mono', sans-serif;
   overflow-y: hidden;
-  /* display: flex; */
-  /* justify-content: center; */
-  /* align-items: center; */
   -webkit-app-region: drag;
   margin: 0;
   padding: 0;
@@ -52,13 +49,10 @@ body {
 button {
   background-color: transparent;
   padding: 5px;
-  margin: 10px;
-  /* border-radius: 10px; */
+  margin: 5px;
   border: none;
   appearance: none;
   font-size: 1.8em;
-  /* box-shadow: 0px 8px 28px -6px rgba(24, 39, 75, 0.12),
-    0px 18px 88px -4px rgba(24, 39, 75, 0.14); */
   transition: color ease-in 0.1s;
   -webkit-app-region: no-drag;
   outline: none;

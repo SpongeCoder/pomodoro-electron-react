@@ -2,12 +2,9 @@ import React from 'react';
 import './ActionPanel.scss';
 
 type ActionPanelProps = {
-  isPlay: boolean,
   roundNumber: number,
   roundCount: number,
   soundOff: boolean,
-  onClickPlay: () => void,
-  onClickPause: () => void,
   onClickReset: () => void,
   onClickNext: () => void,
   onClickSoundOff: () => void,
@@ -16,12 +13,9 @@ type ActionPanelProps = {
 
 const ActionPanel = (props: ActionPanelProps) => {
   const {
-    isPlay,
     roundNumber,
     roundCount,
     soundOff,
-    onClickPlay,
-    onClickPause,
     onClickReset,
     onClickNext,
     onClickSoundOff,
@@ -29,21 +23,6 @@ const ActionPanel = (props: ActionPanelProps) => {
   } = props;
   return (
     <div className="action-panel">
-      <div className="action-panel__center">
-        {
-          !isPlay &&
-          <button type="button" onClick={onClickPlay}>
-            <i className="las la-play" />
-          </button>
-        }
-        {
-          isPlay &&
-          <button type="button" onClick={onClickPause}>
-            <i className="las la-pause" />
-          </button>
-        }
-      </div>
-
       <div className="action-panel__footer">
         <div className="action-panel__count">
           <div className="action-panel__count-value">{roundNumber} / {roundCount}</div>

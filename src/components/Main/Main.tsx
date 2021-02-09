@@ -112,7 +112,7 @@ class Main extends Component<MainProps, MainStateComp> {
     } else {
       this.setState(() => {
         return {
-          percent: Math.round(newPercent),
+          percent: newPercent,
           time: time - 1
         }
       });
@@ -160,14 +160,17 @@ class Main extends Component<MainProps, MainStateComp> {
           time={time}
           percent={percent}
           type={main.typeTime}
+
+          isPlay={main.isPlay}
+          onClickPlay={this.onClickPlay}
+          onClickPause={this.onClickPause}
         />
         <ActionPanel
-          isPlay={main.isPlay}
           roundNumber={currentRound}
           roundCount={settings.roundCount}
           soundOff={settings.isSoundOff}
-          onClickPlay={this.onClickPlay}
-          onClickPause={this.onClickPause}
+          // onClickPlay={this.onClickPlay}
+          // onClickPause={this.onClickPause}
           onClickReset={this.onClickReset}
           onClickNext={this.onClickNext}
           onClickSoundOff={this.onClickSoundOff}

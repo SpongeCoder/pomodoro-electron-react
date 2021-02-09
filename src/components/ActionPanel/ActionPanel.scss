@@ -1,22 +1,4 @@
 .action-panel {
-  &__center {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 20px;
-
-    button {
-      margin: 0;
-      border: 0.08em solid #ced4da;
-      border-radius: 50%;
-      color: white;
-
-      i {
-        display: block;
-      }
-    }
-  }
-
   &__footer {
     width: 100vw;
     display: flex;
