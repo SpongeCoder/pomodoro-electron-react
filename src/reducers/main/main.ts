@@ -10,7 +10,7 @@ export type MainState = {
 const defaultState: MainState = {
   isShowSettings: false,
   isPlay: false,
-  typeTime: 'small'
+  typeTime: 'work'
 }
 
 export function mainReducer(state = defaultState, action: MainActions) {

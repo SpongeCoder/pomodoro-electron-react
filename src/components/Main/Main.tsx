@@ -63,13 +63,13 @@ class Main extends Component<MainProps, MainStateComp> {
     if (time === 0) {
       switch(typeTime) {
         case 'work':
-          this.setState({time: workTime, percent: 0});
+          this.setState({time: workTime, percent: 0, currentRound: 1});
           break;
         case 'small':
-          this.setState({time: smallBreakTime, percent: 0});
+          this.setState({time: smallBreakTime, percent: 0, currentRound: 1});
           break;
         case 'big':
-          this.setState({time: bigBreakTime, percent: 0});
+          this.setState({time: bigBreakTime, percent: 0, currentRound: 1});
           break;
         default:
       }
@@ -85,8 +85,9 @@ class Main extends Component<MainProps, MainStateComp> {
     const { time, currentRound } = this.state;
     const { main, settings, setTypeTime } = this.props;
     const { typeTime } = main;
-    const { workTime, smallBreakTime, bigBreakTime } = settings;
+    const { workTime, smallBreakTime, bigBreakTime, roundBigBreakNumber, roundCount } = settings;
     let newPercent: number;
+    const newRound = roundCount === currentRound ? 1 : currentRound + 1;
 
     switch(typeTime) {
       case 'work':
@@ -103,12 +104,22 @@ class Main extends Component<MainProps, MainStateComp> {
     }
 
     if (time === 0) {
-      if (typeTime === 'work') setTypeTime('small');
-      if (typeTime === 'small') setTypeTime('work');
+      let newType: string = typeTime;
+
+      if ((currentRound + 1) % roundBigBreakNumber === 0) {
+        newType = 'big';
+      } else if (typeTime === 'work') {
+        newType = 'small';
+      } else {
+        newType = 'work';
+      }
+
+      setTypeTime(newType);
+      if (newRound === 1) {
+        this.onClickPause();
+      }
       this.setDefaultTime();
-      this.setState({
-        currentRound: currentRound + 1
-      })
+      this.setState({currentRound: newRound})
     } else {
       this.setState(() => {
         return {
@@ -122,19 +133,64 @@ class Main extends Component<MainProps, MainStateComp> {
 
   onClickPlay = () => {
     const {setIsPlay} = this.props;
-    setIsPlay(true);
     this.timer.start(this.onChangeTime);
+    setIsPlay(true);
   }
 
   onClickPause = () => {
     const {setIsPlay} = this.props;
-    setIsPlay(false);
     this.timer.stop();
+    setIsPlay(false);
   }
 
-  onClickReset = () => {}
+  onClickReset = () => {
+    const { setTypeTime, setIsPlay, settings } = this.props;
 
-  onClickNext = () => {}
+    this.timer.stop();
+    this.setState({
+      time: settings.workTime,
+      percent: 0,
+      currentRound: 1
+    });
+
+    setIsPlay(false);
+    setTypeTime('work');
+  }
+
+  onClickNext = () => {
+    const { currentRound } = this.state;
+    const { main, settings, setTypeTime } = this.props;
+    const { typeTime } = main;
+    const { workTime, smallBreakTime, bigBreakTime, roundBigBreakNumber, roundCount } = settings;
+
+    let newType: string = typeTime;
+    let newTime: number = workTime;
+    const newRound = roundCount === currentRound ? 1 : currentRound + 1;
+
+    if ((currentRound + 1) % roundBigBreakNumber === 0) {
+      newTime = bigBreakTime;
+      newType = 'big';
+    } else if (typeTime === 'work') {
+      newTime = smallBreakTime;
+      newType = 'small';
+    } else {
+      newTime = workTime;
+      newType = 'work';
+    }
+
+    setTypeTime(newType);
+
+    if (newRound === 1) {
+      this.onClickPause();
+    }
+
+    this.setState({
+      currentRound: newRound,
+      percent: 0,
+      time: newTime
+    });
+
+  }
 
   onClickSoundOff = () => {
     const { setSound } = this.props;
@@ -169,8 +225,6 @@ class Main extends Component<MainProps, MainStateComp> {
           roundNumber={currentRound}
           roundCount={settings.roundCount}
           soundOff={settings.isSoundOff}
-          // onClickPlay={this.onClickPlay}
-          // onClickPause={this.onClickPause}
           onClickReset={this.onClickReset}
           onClickNext={this.onClickNext}
           onClickSoundOff={this.onClickSoundOff}

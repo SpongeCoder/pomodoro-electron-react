@@ -7,10 +7,16 @@
   }
 
   &__count {
-    text-align: center;
+    position: relative;
 
     &-value {
       font-size: 18px;
+      position: absolute;
+      top: -18px;
+      left: 0;
+      right: 0;
+      text-align: center;
+      color: #ced4da;
     }
   }
 }

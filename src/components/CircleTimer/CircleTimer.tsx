@@ -12,6 +12,16 @@ type CircleTimerProps = {
   onClickPause: () => void,
 }
 
+type TypeValuesType = {
+  [name: string]: string
+}
+
+const typeValues: TypeValuesType = {
+  work: 'Работа',
+  small: 'Перерыв',
+  big: 'Боль. перерыв'
+}
+
 const CircleTimer = (props: CircleTimerProps) => {
   const {
     time,
@@ -34,7 +44,7 @@ const CircleTimer = (props: CircleTimerProps) => {
         />
         <div className="cr-timer__info">
           <div className="cr-timer__time">{viewTime}</div>
-          <div className="cr-timer__type">{type}</div>
+          <div className="cr-timer__type">{typeValues[type]}</div>
         </div>
         <div className="cr-timer__bg-circle" />
       </div>

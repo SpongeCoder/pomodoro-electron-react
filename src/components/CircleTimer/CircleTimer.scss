@@ -46,12 +46,13 @@ $primary-color-span: #f8f9fa;
     left: 0;
     right: 0;
     top: 0;
-    transform: translateY(68%);
+    transform: translateY(73%);
     color: $primary-color-span;
   }
 
   &__type {
-    margin-top: 8px;
+    margin-top: 0px;
+    font-size: 18px;
   }
 
   &__time {
