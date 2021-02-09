@@ -22,6 +22,12 @@ const typeValues: TypeValuesType = {
   big: 'Боль. перерыв'
 }
 
+const colorValues: TypeValuesType = {
+  work: '#f783ac',
+  small: '#a9e34b',
+  big: '#ffd43b'
+}
+
 const CircleTimer = (props: CircleTimerProps) => {
   const {
     time,
@@ -41,6 +47,7 @@ const CircleTimer = (props: CircleTimerProps) => {
           radius={100}
           stroke={8}
           progress={percent}
+          strokeColor={colorValues[type]}
         />
         <div className="cr-timer__info">
           <div className="cr-timer__time">{viewTime}</div>

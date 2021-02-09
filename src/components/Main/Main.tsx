@@ -87,7 +87,7 @@ class Main extends Component<MainProps, MainStateComp> {
     const { typeTime } = main;
     const { workTime, smallBreakTime, bigBreakTime, roundBigBreakNumber, roundCount } = settings;
     let newPercent: number;
-    const newRound = roundCount === currentRound ? 1 : currentRound + 1;
+    let newRound = currentRound;
 
     switch(typeTime) {
       case 'work':
@@ -106,18 +106,22 @@ class Main extends Component<MainProps, MainStateComp> {
     if (time === 0) {
       let newType: string = typeTime;
 
-      if ((currentRound + 1) % roundBigBreakNumber === 0) {
+      if (currentRound % roundBigBreakNumber === 0 && typeTime === 'work') {
         newType = 'big';
       } else if (typeTime === 'work') {
         newType = 'small';
       } else {
         newType = 'work';
+        newRound += 1;
       }
 
       setTypeTime(newType);
-      if (newRound === 1) {
+
+      if (roundCount === currentRound && (typeTime === 'small' || typeTime === 'big') ) {
+        newRound = 1;
         this.onClickPause();
       }
+
       this.setDefaultTime();
       this.setState({currentRound: newRound})
     } else {
@@ -144,16 +148,15 @@ class Main extends Component<MainProps, MainStateComp> {
   }
 
   onClickReset = () => {
-    const { setTypeTime, setIsPlay, settings } = this.props;
+    const { setTypeTime, settings } = this.props;
 
-    this.timer.stop();
+    this.onClickPause();
     this.setState({
       time: settings.workTime,
       percent: 0,
       currentRound: 1
     });
 
-    setIsPlay(false);
     setTypeTime('work');
   }
 
@@ -165,9 +168,9 @@ class Main extends Component<MainProps, MainStateComp> {
 
     let newType: string = typeTime;
     let newTime: number = workTime;
-    const newRound = roundCount === currentRound ? 1 : currentRound + 1;
+    let newRound = currentRound;
 
-    if ((currentRound + 1) % roundBigBreakNumber === 0) {
+    if (currentRound % roundBigBreakNumber === 0 && typeTime === 'work') {
       newTime = bigBreakTime;
       newType = 'big';
     } else if (typeTime === 'work') {
@@ -176,6 +179,11 @@ class Main extends Component<MainProps, MainStateComp> {
     } else {
       newTime = workTime;
       newType = 'work';
+      newRound += 1;
+    }
+
+    if (roundCount === currentRound && (typeTime === 'small' || typeTime === 'big') ) {
+      newRound = 1;
     }
 
     setTypeTime(newType);
