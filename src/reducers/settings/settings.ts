@@ -2,20 +2,24 @@ import { SettingsActions } from './actions';
 import * as TYPES from './constants';
 
 export type SettingsState = {
-  workTime: number,
-  smallBreakTime: number,
-  bigBreakTime: number,
+  time: {
+    work: number,
+    small: number,
+    big: number
+  },
   roundCount: number,
   roundBigBreakNumber: number,
   isSoundOff: boolean
 }
 
 const defaultState: SettingsState = {
-  workTime: 2700, // 45 min
-  smallBreakTime: 900, // 15 min
-  bigBreakTime: 1800, // 30 min
-  roundCount: 6,
-  roundBigBreakNumber: 2,
+  time: {
+    work: 27,
+    small: 9,
+    big: 18
+  },
+  roundCount: 8,
+  roundBigBreakNumber: 4,
   isSoundOff: false
 }
 

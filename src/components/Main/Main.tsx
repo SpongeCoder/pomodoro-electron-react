@@ -14,7 +14,7 @@ import './Main.scss';
 
 type MainStateComp = {
   percent: number,
-  time: number,
+  currentTime: number,
   currentRound: number,
 }
 
@@ -35,7 +35,7 @@ class Main extends Component<MainProps, MainStateComp> {
 
     this.state = {
       percent: 0,
-      time: 0,
+      currentTime: 0,
       currentRound: 1
     }
 
@@ -51,28 +51,21 @@ class Main extends Component<MainProps, MainStateComp> {
   }
 
   setDefaultTime = () => {
-    const { time } = this.state;
+    const { currentTime } = this.state;
     const { main, settings } = this.props;
     const { typeTime, isPlay } = main;
-    const { workTime, smallBreakTime, bigBreakTime } = settings;
+    const { time } = settings;
 
     if (isPlay) {
       this.timer.start(this.onChangeTime);
     }
 
-    if (time === 0) {
-      switch(typeTime) {
-        case 'work':
-          this.setState({time: workTime, percent: 0, currentRound: 1});
-          break;
-        case 'small':
-          this.setState({time: smallBreakTime, percent: 0, currentRound: 1});
-          break;
-        case 'big':
-          this.setState({time: bigBreakTime, percent: 0, currentRound: 1});
-          break;
-        default:
-      }
+    if (currentTime === 0) {
+      this.setState({
+        currentTime: time[typeTime],
+        percent: 0,
+        currentRound: 1
+      });
     }
   }
 
@@ -82,28 +75,16 @@ class Main extends Component<MainProps, MainStateComp> {
   }
 
   onChangeTime = () => {
-    const { time, currentRound } = this.state;
+    const { currentTime, currentRound } = this.state;
     const { main, settings, setTypeTime } = this.props;
     const { typeTime } = main;
-    const { workTime, smallBreakTime, bigBreakTime, roundBigBreakNumber, roundCount } = settings;
-    let newPercent: number;
+    const { roundBigBreakNumber, roundCount, time } = settings;
+    let newPercent = 0;
     let newRound = currentRound;
 
-    switch(typeTime) {
-      case 'work':
-        newPercent = 100 - ((time - 1) / workTime * 100)
-        break;
-      case 'small':
-        newPercent = 100 - ((time - 1) / smallBreakTime * 100)
-        break;
-      case 'big':
-        newPercent = 100 - ((time - 1) / bigBreakTime * 100)
-        break;
-      default:
-        newPercent = 0;
-    }
+    newPercent = 100 - ((currentTime - 1) / time[typeTime] * 100)
 
-    if (time === 0) {
+    if (currentTime === 0) {
       let newType: string = typeTime;
 
       if (currentRound % roundBigBreakNumber === 0 && typeTime === 'work') {
@@ -128,7 +109,7 @@ class Main extends Component<MainProps, MainStateComp> {
       this.setState(() => {
         return {
           percent: newPercent,
-          time: time - 1
+          currentTime: currentTime - 1
         }
       });
     }
@@ -152,7 +133,7 @@ class Main extends Component<MainProps, MainStateComp> {
 
     this.onClickPause();
     this.setState({
-      time: settings.workTime,
+      currentTime: settings.time.work,
       percent: 0,
       currentRound: 1
     });
@@ -164,38 +145,35 @@ class Main extends Component<MainProps, MainStateComp> {
     const { currentRound } = this.state;
     const { main, settings, setTypeTime } = this.props;
     const { typeTime } = main;
-    const { workTime, smallBreakTime, bigBreakTime, roundBigBreakNumber, roundCount } = settings;
+    const { time, roundBigBreakNumber, roundCount } = settings;
 
     let newType: string = typeTime;
-    let newTime: number = workTime;
+    let newTime: number = time.work;
     let newRound = currentRound;
 
     if (currentRound % roundBigBreakNumber === 0 && typeTime === 'work') {
-      newTime = bigBreakTime;
+      newTime = time.big;
       newType = 'big';
     } else if (typeTime === 'work') {
-      newTime = smallBreakTime;
+      newTime = time.small;
       newType = 'small';
     } else {
-      newTime = workTime;
+      newTime = time.work;
       newType = 'work';
       newRound += 1;
     }
 
     if (roundCount === currentRound && (typeTime === 'small' || typeTime === 'big') ) {
       newRound = 1;
+      this.onClickPause();
     }
 
     setTypeTime(newType);
 
-    if (newRound === 1) {
-      this.onClickPause();
-    }
-
     this.setState({
       currentRound: newRound,
       percent: 0,
-      time: newTime
+      currentTime: newTime
     });
 
   }
@@ -212,7 +190,7 @@ class Main extends Component<MainProps, MainStateComp> {
 
   render() {
     const { main, settings } = this.props;
-    const { percent, time, currentRound } = this.state;
+    const { percent, currentTime, currentRound } = this.state;
 
     return (
       <div className="main">
@@ -221,7 +199,7 @@ class Main extends Component<MainProps, MainStateComp> {
           onToggleSettings={this.onToggleSettings}
         />
         <CircleTimer
-          time={time}
+          time={currentTime}
           percent={percent}
           type={main.typeTime}
 
