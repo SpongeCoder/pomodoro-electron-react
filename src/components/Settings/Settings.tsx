@@ -1,7 +1,9 @@
 import React from 'react';
 import './Settings.scss';
 
-export default function Settings(props: {isShow: boolean}) {
+function Settings(props: {isShow: boolean}) {
+  console.log('render settings')
+
   const { isShow } = props;
   let cn = 'settings';
 
@@ -15,3 +17,5 @@ export default function Settings(props: {isShow: boolean}) {
     </div>
   )
 }
+
+export default React.memo(Settings);

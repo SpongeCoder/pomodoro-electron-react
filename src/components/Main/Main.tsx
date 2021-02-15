@@ -191,7 +191,7 @@ class Main extends Component<MainProps, MainStateComp> {
   render() {
     const { main, settings } = this.props;
     const { percent, currentTime, currentRound } = this.state;
-
+    console.log('render main');
     return (
       <div className="main">
         <Header

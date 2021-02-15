@@ -39,7 +39,7 @@ const CircleTimer = (props: CircleTimerProps) => {
   } = props;
 
   const viewTime = clockView(time);
-
+  console.log('render circle timer');
   return (
     <div className="cr-timer">
       <div className="cr-timer__ring">
@@ -74,4 +74,4 @@ const CircleTimer = (props: CircleTimerProps) => {
   );
 };
 
-export default CircleTimer;
+export default React.memo(CircleTimer);

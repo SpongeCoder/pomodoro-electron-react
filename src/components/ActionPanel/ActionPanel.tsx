@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import './ActionPanel.scss';
 
 type ActionPanelProps = {
@@ -12,6 +12,8 @@ type ActionPanelProps = {
 }
 
 const ActionPanel = (props: ActionPanelProps) => {
+  console.log('render panel');
+
   const {
     roundNumber,
     roundCount,
@@ -21,6 +23,7 @@ const ActionPanel = (props: ActionPanelProps) => {
     onClickSoundOff,
     onClickSoundOn
   } = props;
+
   return (
     <div className="action-panel">
       <div className="action-panel__footer">
@@ -52,4 +55,4 @@ const ActionPanel = (props: ActionPanelProps) => {
   );
 }
 
-export default ActionPanel;
+export default React.memo(ActionPanel);

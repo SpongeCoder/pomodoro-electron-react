@@ -17,7 +17,7 @@ const Header = (props: {
   onToggleSettings: () => void,
 }) => {
   const {isShowSettings, onToggleSettings} = props;
-
+  console.log('render header')
   return (
     <div className="header">
       <div className="header__left">
@@ -45,4 +45,4 @@ const Header = (props: {
   );
 };
 
-export default Header;
+export default React.memo(Header);

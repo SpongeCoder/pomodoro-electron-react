@@ -3,6 +3,7 @@ import React from 'react';
 import { Provider } from 'react-redux';
 import { store } from './reducers/store';
 import Main from './components/Main/Main';
+import MainUseHooks from './components/Main/MainUseHooks';
 
 export default function App() {
   /* return (
@@ -15,7 +16,8 @@ export default function App() {
 
   return (
     <Provider store={store}>
-      <Main />
+      {/* <Main /> */}
+      <MainUseHooks />
     </Provider>
   )
 }
