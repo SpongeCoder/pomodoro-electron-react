@@ -1,5 +1,8 @@
 import React from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { remote } from 'electron';
+import { MainState } from '../../reducers/main/main';
+import { onSetShowSettings } from '../../reducers/main/actions';
 import './Header.scss';
 
 const closeApp = () => {
@@ -12,11 +15,14 @@ const minimizeApp = () => {
   WIN.minimize();
 };
 
-const Header = (props: {
-  isShowSettings: boolean,
-  onToggleSettings: () => void,
-}) => {
-  const {isShowSettings, onToggleSettings} = props;
+const Header = () => {
+  const dispatch = useDispatch();
+  const isShowSettings = useSelector((state: { main: MainState }) => state.main.isShowSettings);
+
+  const onToggleSettings = () => {
+    dispatch(onSetShowSettings(!isShowSettings))
+  }
+
   console.log('render header')
   return (
     <div className="header">

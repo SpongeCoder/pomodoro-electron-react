@@ -1,28 +1,33 @@
-import React, { useState } from 'react';
+import React from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { onSetSound } from '../../reducers/settings/actions';
+import { SettingsState } from '../../reducers/settings/settings';
 import './ActionPanel.scss';
 
 type ActionPanelProps = {
   roundNumber: number,
-  roundCount: number,
-  soundOff: boolean,
   onClickReset: () => void,
   onClickNext: () => void,
-  onClickSoundOff: () => void,
-  onClickSoundOn: () => void
 }
 
 const ActionPanel = (props: ActionPanelProps) => {
-  console.log('render panel');
-
+  const isSoundOff = useSelector((state: { settings: SettingsState }) => state.settings.isSoundOff);
+  const roundCount = useSelector((state: { settings: SettingsState }) => state.settings.roundCount);
+  const dispatch = useDispatch();
   const {
     roundNumber,
-    roundCount,
-    soundOff,
     onClickReset,
     onClickNext,
-    onClickSoundOff,
-    onClickSoundOn
   } = props;
+
+  const onClickSoundOff = () => {
+    dispatch(onSetSound(true))
+  }
+  const onClickSoundOn = () => {
+    dispatch(onSetSound(false))
+  }
+
+  console.log('render panel');
 
   return (
     <div className="action-panel">
@@ -38,13 +43,13 @@ const ActionPanel = (props: ActionPanelProps) => {
             <i className="las la-step-forward" />
           </button>
           {
-            soundOff &&
+            isSoundOff &&
             <button type="button" onClick={onClickSoundOn}>
               <i className="las la-volume-mute" />
             </button>
           }
           {
-            !soundOff &&
+            !isSoundOff &&
             <button type="button" onClick={onClickSoundOff}>
               <i className="las la-volume-up" />
             </button>

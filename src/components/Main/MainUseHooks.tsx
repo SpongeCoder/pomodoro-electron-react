@@ -5,8 +5,8 @@ import Header from '../Header/Header';
 import CircleTimer from '../CircleTimer/CircleTimer';
 import ActionPanel from '../ActionPanel/ActionPanel';
 import Settings from '../Settings/Settings';
-import { onSetShowSettings, onSetIsPlay, onChangeTimeType } from '../../reducers/main/actions';
-import { onSetSound } from '../../reducers/settings/actions';
+import { onSetIsPlay, onChangeTimeType } from '../../reducers/main/actions';
+// import { onSetSound } from '../../reducers/settings/actions';
 // import Timer from '../../shared/Timer';
 import { MainState } from '../../reducers/main/main';
 import { SettingsState } from '../../reducers/settings/settings';
@@ -65,10 +65,6 @@ const Main: React.FC<MainProps> = () => {
     setPercent(0);
     setCurrentTime(settings.time[main.typeTime]);
   }, [settings.time, main.typeTime])
-
-  const onToggleViewSettings = useCallback(() => {
-    dispatch(onSetShowSettings(!main.isShowSettings))
-  }, [main.isShowSettings, dispatch])
 
   const onPause = useCallback(() => {
     if (timerRef.current) clearInterval(timerRef.current);
@@ -151,21 +147,10 @@ const Main: React.FC<MainProps> = () => {
     setPercent(0);
   }, [onPause, dispatch]);
 
-  const onClickSoundOff = useCallback(() => {
-    dispatch(onSetSound(true))
-  }, [dispatch])
-  const onClickSoundOn = useCallback(() => {
-    dispatch(onSetSound(false))
-  }, [dispatch])
-
   console.log('render main')
-
   return (
     <div className="main">
-      <Header
-        isShowSettings={main.isShowSettings}
-        onToggleSettings={onToggleViewSettings}
-      />
+      <Header />
       <CircleTimer
         time={currentTime}
         percent={percent}
@@ -176,17 +161,11 @@ const Main: React.FC<MainProps> = () => {
       />
       <ActionPanel
         roundNumber={currentRound}
-        roundCount={settings.roundCount}
-        soundOff={settings.isSoundOff}
         onClickReset={onClickReset}
         onClickNext={onClickNext}
-        onClickSoundOff={onClickSoundOff}
-        onClickSoundOn={onClickSoundOn}
       />
 
-      <Settings
-        isShow={main.isShowSettings}
-      />
+      <Settings />
     </div>
   );
 }
