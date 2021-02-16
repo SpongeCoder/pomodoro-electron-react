@@ -6,30 +6,18 @@ import CircleTimer from '../CircleTimer/CircleTimer';
 import ActionPanel from '../ActionPanel/ActionPanel';
 import Settings from '../Settings/Settings';
 import { onSetIsPlay, onChangeTimeType } from '../../reducers/main/actions';
-// import { onSetSound } from '../../reducers/settings/actions';
 // import Timer from '../../shared/Timer';
 import { MainState } from '../../reducers/main/main';
 import { SettingsState } from '../../reducers/settings/settings';
 import './Main.scss';
 
-/* type MainStateComp = {
-  percent: number,
-  currentTime: number,
-  currentRound: number,
-} */
+const Main: React.FC = () => {
+  const typeTime = useSelector((state: { main: MainState }) => state.main.typeTime);
+  const isPlay = useSelector((state: { main: MainState }) => state.main.isPlay);
+  const settingsTime = useSelector((state: { settings: SettingsState }) => state.settings.time);
+  const roundBigBreakNumber = useSelector((state: { settings: SettingsState }) => state.settings.roundBigBreakNumber);
+  const roundCount = useSelector((state: { settings: SettingsState }) => state.settings.roundCount);
 
-type MainProps = {
-  main: MainState,
-  settings: SettingsState,
-  setShowSettings: (value: boolean) => void,
-  setIsPlay: (value: boolean) => void,
-  setSound: (value: boolean) => void,
-  setTypeTime: (value: string) => void,
-}
-
-const Main: React.FC<MainProps> = () => {
-  const main = useSelector((state: { main: MainState }) => state.main);
-  const settings = useSelector((state: { settings: SettingsState }) => state.settings);
   const dispatch = useDispatch();
   const timerRef = useRef<number | null>(null);
 
@@ -46,8 +34,8 @@ const Main: React.FC<MainProps> = () => {
   const curRoundRef = useRef(currentRound);
   curRoundRef.current = currentRound;
 
-  const typeTimeRef = useRef(main.typeTime);
-  typeTimeRef.current = main.typeTime;
+  const typeTimeRef = useRef(typeTime);
+  typeTimeRef.current = typeTime;
 
 
   useEffect(() => {
@@ -63,8 +51,8 @@ const Main: React.FC<MainProps> = () => {
   useEffect(() => {
     console.log('useEffect typeTime')
     setPercent(0);
-    setCurrentTime(settings.time[main.typeTime]);
-  }, [settings.time, main.typeTime])
+    setCurrentTime(settingsTime[typeTime]);
+  }, [settingsTime, typeTime])
 
   const onPause = useCallback(() => {
     if (timerRef.current) clearInterval(timerRef.current);
@@ -72,41 +60,35 @@ const Main: React.FC<MainProps> = () => {
   }, [dispatch]);
 
   const onChangeTime = () => {
-    const { roundBigBreakNumber, roundCount, time } = settings;
-
-    const newPercent = 100 - ((curTimeRef.current - 1) / time[typeTimeRef.current] * 100);
+    const newPercent = 100 - ((curTimeRef.current - 1) / settingsTime[typeTimeRef.current] * 100);
 
     let newType: string = typeTimeRef.current;
     let newRound = curRoundRef.current;
 
-    if (curRoundRef.current % roundBigBreakNumber === 0 && typeTimeRef.current === 'work') {
-      newType = 'big';
-    } else if (typeTimeRef.current === 'work') {
-      newType = 'small';
-    } else {
-      newType = 'work';
-      newRound += 1;
-    }
-
-    console.log('newPercent', newPercent);
-    console.log('curTimeRef.current', curTimeRef.current);
-    console.log('typeTimeRef.current', typeTimeRef.current);
-
     if (curTimeRef.current === 0) {
+      if (curRoundRef.current % roundBigBreakNumber === 0 && typeTimeRef.current === 'work') {
+        newType = 'big';
+      } else if (typeTimeRef.current === 'work') {
+        newType = 'small';
+      } else {
+        newType = 'work';
+        newRound += 1;
+      }
+
       dispatch(onChangeTimeType(newType))
 
-      if (roundCount === curRoundRef.current && (typeTimeRef.current === 'small' || typeTimeRef.current === 'big') ) {
+      if (roundCount === curRoundRef.current && (typeTimeRef.current === 'work') ) {
         newRound = 1;
         onPause();
       }
 
       setCurrentRound(newRound);
-
     } else {
       setPercent(newPercent);
       setCurrentTime((prev) => prev - 1);
     }
 
+    console.log('onChangeTime', newPercent, newType, typeTimeRef.current);
   }
 
   const onPlay = () => {
@@ -115,21 +97,19 @@ const Main: React.FC<MainProps> = () => {
   }
 
   const onClickNext = useCallback(() => {
-    const { roundBigBreakNumber, roundCount } = settings;
-
-    let newType: string = main.typeTime;
+    let newType: string = typeTime;
     let newRound = currentRound;
 
-    if (currentRound % roundBigBreakNumber === 0 && main.typeTime === 'work') {
+    if (currentRound % roundBigBreakNumber === 0 && typeTime === 'work') {
       newType = 'big';
-    } else if (main.typeTime === 'work') {
+    } else if (typeTime === 'work') {
       newType = 'small';
     } else {
       newType = 'work';
       newRound += 1;
     }
 
-    if (roundCount === currentRound && (main.typeTime === 'small' || main.typeTime === 'big') ) {
+    if (roundCount === currentRound && (typeTime === 'small' || typeTime === 'big') ) {
       newRound = 1;
       onPause()
     }
@@ -137,7 +117,7 @@ const Main: React.FC<MainProps> = () => {
     dispatch(onChangeTimeType(newType))
     setCurrentRound(newRound);
 
-  }, [currentRound, main.typeTime, settings, onPause, dispatch]);
+  }, [currentRound, typeTime, roundBigBreakNumber, roundCount, onPause, dispatch]);
 
   const onClickReset = useCallback(() => {
     console.log('onClickReset')
@@ -154,8 +134,8 @@ const Main: React.FC<MainProps> = () => {
       <CircleTimer
         time={currentTime}
         percent={percent}
-        type={main.typeTime}
-        isPlay={main.isPlay}
+        type={typeTime}
+        isPlay={isPlay}
         onClickPlay={onPlay}
         onClickPause={onPause}
       />
