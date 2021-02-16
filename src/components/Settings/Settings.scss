@@ -1,16 +1,20 @@
 .settings {
   position: absolute;
-  left: 0;
+  left: -100%;
   top: 63px;
   width: 100%;
   height: calc(100vh - 63px);
-  transform: translateX(-100%);
-  transition: transform ease-in 0.3s;
+  // transform: translateX(-100%);
+  transition: left ease-in 0.3s;
   background-color: #212529;
   z-index: 11;
   text-align: center;
 
   &.is-show {
+    left: 0;
     transform: translateX(0);
+  }
+
+  &-input {
   }
 }

@@ -33,12 +33,6 @@ body {
   color: white;
   height: 100vh;
   background: #212529;
-  /* background: linear-gradient(
-    200.96deg,
-    #fedc2a -29.09%,
-    #dd5789 51.77%,
-    #7a2c9e 129.35%
-  ); */
   font-family: 'Roboto Mono', sans-serif;
   overflow-y: hidden;
   -webkit-app-region: drag;
@@ -63,4 +57,8 @@ button {
 button:hover {
   color: white;
   /* transform: scale(1.1); */
+}
+
+input {
+  -webkit-app-region: no-drag;
 }

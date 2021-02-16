@@ -14,9 +14,9 @@ export type SettingsState = {
 
 const defaultState: SettingsState = {
   time: {
-    work: 27,
-    small: 9,
-    big: 18
+    work: 10,
+    small: 5,
+    big: 8
   },
   roundCount: 8,
   roundBigBreakNumber: 4,
@@ -30,6 +30,48 @@ export function settingsReducer(state = defaultState, action: SettingsActions) {
         ...state,
         isSoundOff: action.value
       }
+
+    case TYPES.SET_ROUND_COUNT:
+      return {
+        ...state,
+        roundCount: action.value
+      }
+
+    case TYPES.SET_BIG_BREAK_NUMBER:
+      return {
+        ...state,
+        roundBigBreakNumber: action.value
+      }
+
+    case TYPES.SET_WORK_TIME:
+      return {
+        ...state,
+        time: {
+          ...state.time,
+          work: action.value
+        }
+      }
+
+    case TYPES.SET_BREAK_TIME:
+      return {
+        ...state,
+        time: {
+          ...state.time,
+          small: action.value
+        }
+      }
+
+    case TYPES.SET_LONG_BREAK_TIME:
+      return {
+        ...state,
+        time: {
+          ...state.time,
+          big: action.value
+        }
+      }
+
+    case TYPES.SET_DEFAULT_SETTINGS:
+      return defaultState
 
     default:
       return state;
