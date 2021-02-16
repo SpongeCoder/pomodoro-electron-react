@@ -21,15 +21,14 @@ const Main: React.FC = () => {
   const dispatch = useDispatch();
   const timerRef = useRef<number | null>(null);
 
-  const [percent, setPercent] = useState(0);
-  const [currentTime, setCurrentTime] = useState(0);
+  const [timeState, setTimeState] = useState({time: 0, percent: 0});
   const [currentRound, setCurrentRound] = useState(1);
 
-  const curTimeRef = useRef(currentTime);
-  curTimeRef.current = currentTime;
+  const curTimeRef = useRef(timeState.time);
+  curTimeRef.current = timeState.time;
 
-  const percentRef = useRef(percent);
-  percentRef.current = percent;
+  const percentRef = useRef(timeState.percent);
+  percentRef.current = timeState.percent;
 
   const curRoundRef = useRef(currentRound);
   curRoundRef.current = currentRound;
@@ -37,21 +36,18 @@ const Main: React.FC = () => {
   const typeTimeRef = useRef(typeTime);
   typeTimeRef.current = typeTime;
 
-
   useEffect(() => {
-    console.log('useEffect def')
     const timer = timerRef.current as ReturnType<typeof setInterval> | null;
-
     return () => {
-      console.log('end component (stop timer)')
       if (timer) clearInterval(timer);
     }
   }, []);
 
   useEffect(() => {
-    console.log('useEffect typeTime')
-    setPercent(0);
-    setCurrentTime(settingsTime[typeTime]);
+    setTimeState({
+      time: settingsTime[typeTime],
+      percent: 0
+    });
   }, [settingsTime, typeTime])
 
   const onPause = useCallback(() => {
@@ -84,11 +80,13 @@ const Main: React.FC = () => {
 
       setCurrentRound(newRound);
     } else {
-      setPercent(newPercent);
-      setCurrentTime((prev) => prev - 1);
+      setTimeState((prev)=> {
+        return {
+          percent: newPercent,
+          time: prev.time - 1
+        }
+      })
     }
-
-    console.log('onChangeTime', newPercent, newType, typeTimeRef.current);
   }
 
   const onPlay = () => {
@@ -124,7 +122,7 @@ const Main: React.FC = () => {
     onPause();
     dispatch(onChangeTimeType('work'))
     setCurrentRound(1);
-    setPercent(0);
+    setTimeState(prev => ({...prev, percent: 0}))
   }, [onPause, dispatch]);
 
   console.log('render main')
@@ -132,8 +130,8 @@ const Main: React.FC = () => {
     <div className="main">
       <Header />
       <CircleTimer
-        time={currentTime}
-        percent={percent}
+        time={timeState.time}
+        percent={timeState.percent}
         type={typeTime}
         isPlay={isPlay}
         onClickPlay={onPlay}
