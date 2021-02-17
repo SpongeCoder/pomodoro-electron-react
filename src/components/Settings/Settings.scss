@@ -56,11 +56,11 @@
   &-track {
     top: 5px;
     height: 5px;
-    background: #a9e34b;
+    background: #22b8cf;
     border-radius: 999px;
 
     &-1 {
-      background: #212529;
+      background: #212529 !important;
     }
   }
 
@@ -68,9 +68,42 @@
     width: 16px;
     height: 16px;
     border-radius: 50%;
-    background-color: #a9e34b;
+    background-color: #22b8cf;
     cursor: pointer;
     box-sizing: border-box;
     outline: none;
+  }
+
+  &--work {
+    .horizontal-slider {
+      &-track {
+        background: #f783ac;
+      }
+      &-thumb {
+        background: #f783ac;
+      }
+    }
+  }
+
+  &--short {
+    .horizontal-slider {
+      &-track {
+        background: #a9e34b;
+      }
+      &-thumb {
+        background: #a9e34b;
+      }
+    }
+  }
+
+  &--long {
+    .horizontal-slider {
+      &-track {
+        background: #ffd43b;
+      }
+      &-thumb {
+        background: #ffd43b;
+      }
+    }
   }
 }

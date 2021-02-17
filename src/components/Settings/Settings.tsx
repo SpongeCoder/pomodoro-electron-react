@@ -60,7 +60,7 @@ function Settings() {
           <div className="settings-input__title">Work</div>
           <div className="settings-input__value">{clockView(workTime)}</div>
           <ReactSlider
-            className="horizontal-slider"
+            className="horizontal-slider horizontal-slider--work"
             thumbClassName="horizontal-slider-thumb"
             trackClassName="horizontal-slider-track"
             min={60}
@@ -74,7 +74,7 @@ function Settings() {
           <div className="settings-input__title">Short break</div>
           <div className="settings-input__value">{clockView(smallTime)}</div>
           <ReactSlider
-            className="horizontal-slider"
+            className="horizontal-slider horizontal-slider--short"
             thumbClassName="horizontal-slider-thumb"
             trackClassName="horizontal-slider-track"
             min={60}
@@ -88,7 +88,7 @@ function Settings() {
           <div className="settings-input__title">Long break</div>
           <div className="settings-input__value">{clockView(bigTime)}</div>
           <ReactSlider
-            className="horizontal-slider"
+            className="horizontal-slider horizontal-slider--long"
             thumbClassName="horizontal-slider-thumb"
             trackClassName="horizontal-slider-track"
             min={60}
@@ -102,7 +102,7 @@ function Settings() {
           <div className="settings-input__title">Rounds</div>
           <div className="settings-input__value">{roundCount}</div>
           <ReactSlider
-            className="horizontal-slider"
+            className="horizontal-slider horizontal-slider--rounds"
             thumbClassName="horizontal-slider-thumb"
             trackClassName="horizontal-slider-track"
             min={1}
@@ -115,7 +115,7 @@ function Settings() {
           <div className="settings-input__title">Long Break Round</div>
           <div className="settings-input__value">{roundBigBreakNumber}</div>
           <ReactSlider
-            className="horizontal-slider"
+            className="horizontal-slider horizontal-slider--long-round"
             thumbClassName="horizontal-slider-thumb"
             trackClassName="horizontal-slider-track"
             min={0}
