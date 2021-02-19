@@ -1,12 +1,14 @@
 import { SettingsActions } from './actions';
 import * as TYPES from './constants';
 
+export type TimeType = {
+  work: number,
+  small: number,
+  big: number
+}
+
 export type SettingsState = {
-  time: {
-    work: number,
-    small: number,
-    big: number
-  },
+  time: TimeType,
   roundCount: number,
   roundBigBreakNumber: number,
   isSoundOff: boolean
@@ -23,7 +25,7 @@ const defaultState: SettingsState = {
   isSoundOff: false
 }
 
-export function settingsReducer(state = defaultState, action: SettingsActions) {
+export function settingsReducer(state = defaultState, action: SettingsActions): SettingsState {
   switch (action.type) {
     case TYPES.ON_SET_SOUND:
       return {

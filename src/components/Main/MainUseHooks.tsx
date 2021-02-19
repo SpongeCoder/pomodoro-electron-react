@@ -5,7 +5,7 @@ import CircleTimer from '../CircleTimer/CircleTimer';
 import ActionPanel from '../ActionPanel/ActionPanel';
 import Settings from '../Settings/Settings';
 import { onSetIsPlay, onChangeTimeType } from '../../reducers/main/actions';
-import { MainState } from '../../reducers/main/main';
+import { MainState, TimeTypeType } from '../../reducers/main/main';
 import { SettingsState } from '../../reducers/settings/settings';
 import './Main.scss';
 
@@ -55,7 +55,7 @@ const Main: React.FC = () => {
   const onChangeTime = () => {
     const newPercent = 100 - ((curTimeRef.current - 1) / settingsTime[typeTimeRef.current] * 100);
 
-    let newType: string = typeTimeRef.current;
+    let newType: TimeTypeType = typeTimeRef.current;
     let newRound = curRoundRef.current;
 
     if (curTimeRef.current === 0) {
@@ -92,7 +92,7 @@ const Main: React.FC = () => {
   }
 
   const onClickNext = useCallback(() => {
-    let newType: string = typeTime;
+    let newType: TimeTypeType = typeTime;
     let newRound = currentRound;
 
     if (currentRound % roundBigBreakNumber === 0 && typeTime === 'work') {

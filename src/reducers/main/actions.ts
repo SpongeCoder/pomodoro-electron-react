@@ -1,4 +1,4 @@
-import { Action/* , Dispatch */ } from 'redux';
+import { Action } from 'redux';
 import * as TYPES from './constants';
 
 export interface IOnSetShowSettings extends Action {

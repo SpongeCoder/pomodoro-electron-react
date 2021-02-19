@@ -1,10 +1,12 @@
 import { MainActions } from './actions';
 import * as TYPES from './constants';
 
+export type TimeTypeType = 'work' | 'small' | 'big';
+
 export type MainState = {
   isShowSettings: boolean,
   isPlay: boolean,
-  typeTime: 'work' | 'small' | 'big',
+  typeTime: TimeTypeType,
 }
 
 const defaultState: MainState = {
