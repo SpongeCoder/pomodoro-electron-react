@@ -4,22 +4,23 @@ import Header from '../Header/Header';
 import CircleTimer from '../CircleTimer/CircleTimer';
 import ActionPanel from '../ActionPanel/ActionPanel';
 import Settings from '../Settings/Settings';
-import { onSetIsPlay, onChangeTimeType } from '../../reducers/main/actions';
+import { onSetIsPlay, onChangeTimeType, onSetCurrentRound } from '../../reducers/main/actions';
 import { MainState, TimeTypeType } from '../../reducers/main/main';
 import { SettingsState } from '../../reducers/settings/settings';
 import './Main.scss';
 
 const Main: React.FC = () => {
   const typeTime = useSelector((state: { main: MainState }) => state.main.typeTime);
+  const currentRound = useSelector((state: { main: MainState }) => state.main.currentRound);
   const settingsTime = useSelector((state: { settings: SettingsState }) => state.settings.time);
   const roundBigBreakNumber = useSelector((state: { settings: SettingsState }) => state.settings.roundBigBreakNumber);
   const roundCount = useSelector((state: { settings: SettingsState }) => state.settings.roundCount);
+  const isPlay = useSelector((state: { main: MainState }) => state.main.isPlay);
 
   const dispatch = useDispatch();
   const timerRef = useRef<number | null>(null);
 
   const [timeState, setTimeState] = useState({time: 0, percent: 0});
-  const [currentRound, setCurrentRound] = useState(1);
 
   const curTimeRef = useRef(timeState.time);
   curTimeRef.current = timeState.time;
@@ -47,12 +48,7 @@ const Main: React.FC = () => {
     });
   }, [settingsTime, typeTime])
 
-  const onPause = useCallback(() => {
-    if (timerRef.current) clearInterval(timerRef.current);
-    dispatch(onSetIsPlay(false));
-  }, [dispatch]);
-
-  const onChangeTime = () => {
+  const onChangeTime = useCallback(() => {
     const newPercent = 100 - ((curTimeRef.current - 1) / settingsTime[typeTimeRef.current] * 100);
 
     let newType: TimeTypeType = typeTimeRef.current;
@@ -72,10 +68,10 @@ const Main: React.FC = () => {
 
       if (roundCount === curRoundRef.current && (typeTimeRef.current === 'work') ) {
         newRound = 1;
-        onPause();
+        dispatch(onSetIsPlay(false));
       }
 
-      setCurrentRound(newRound);
+      dispatch(onSetCurrentRound(newRound));
     } else {
       setTimeState((prev)=> {
         return {
@@ -84,12 +80,12 @@ const Main: React.FC = () => {
         }
       })
     }
-  }
+  }, [dispatch, roundCount, roundBigBreakNumber, settingsTime])
 
-  const onPlay = () => {
-    timerRef.current = setInterval(onChangeTime, 1000) as unknown as number;
-    dispatch(onSetIsPlay(true));
-  }
+  useEffect(() => {
+    if (!isPlay && timerRef.current) clearInterval(timerRef.current);
+    if (isPlay) timerRef.current = setInterval(onChangeTime, 1000) as unknown as number;
+  }, [isPlay, onChangeTime])
 
   const onClickNext = useCallback(() => {
     let newType: TimeTypeType = typeTime;
@@ -106,21 +102,20 @@ const Main: React.FC = () => {
 
     if (roundCount === currentRound && (typeTime === 'small' || typeTime === 'big') ) {
       newRound = 1;
-      onPause()
+      dispatch(onSetIsPlay(false));
     }
 
-    dispatch(onChangeTimeType(newType))
-    setCurrentRound(newRound);
-
-  }, [currentRound, typeTime, roundBigBreakNumber, roundCount, onPause, dispatch]);
+    dispatch(onChangeTimeType(newType));
+    dispatch(onSetCurrentRound(newRound));
+  }, [currentRound, typeTime, roundBigBreakNumber, roundCount, dispatch]);
 
   const onClickReset = useCallback(() => {
     console.log('onClickReset')
-    onPause();
-    dispatch(onChangeTimeType('work'))
-    setCurrentRound(1);
-    setTimeState(prev => ({...prev, percent: 0}))
-  }, [onPause, dispatch]);
+    dispatch(onSetIsPlay(false));
+    dispatch(onChangeTimeType('work'));
+    dispatch(onSetCurrentRound(1));
+    setTimeState({time: settingsTime[typeTime], percent: 0})
+  }, [dispatch, settingsTime, typeTime]);
 
   console.log('render main')
   return (
@@ -129,15 +124,11 @@ const Main: React.FC = () => {
       <CircleTimer
         time={timeState.time}
         percent={timeState.percent}
-        onClickPlay={onPlay}
-        onClickPause={onPause}
       />
       <ActionPanel
-        roundNumber={currentRound}
         onClickReset={onClickReset}
         onClickNext={onClickNext}
       />
-
       <Settings />
     </div>
   );

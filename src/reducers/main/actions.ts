@@ -23,7 +23,6 @@ export function onSetIsPlay(value: boolean): IOnSetIsPlay {
   }
 }
 
-
 export type ChangeTimeTypeActionType = {
   type: typeof TYPES.ON_CHANGE_TYPE_TIME,
   value: 'work' | 'small' | 'big'
@@ -35,11 +34,15 @@ export function onChangeTimeType(value: 'work' | 'small' | 'big'): ChangeTimeTyp
   }
 }
 
-export type MainActions = IOnSetShowSettings | IOnSetIsPlay | ChangeTimeTypeActionType;
+export type SetCurrentRoundType = {
+  type: typeof TYPES.ON_SET_CURRENT_ROUND,
+  value: number
+}
+export function onSetCurrentRound(value: number): SetCurrentRoundType {
+  return {
+    type: TYPES.ON_SET_CURRENT_ROUND,
+    value
+  }
+}
 
-
-/* export function actionOnSetShowSettings(value: boolean) {
-  return (dispatch: Dispatch) => {
-    return dispatch(onSetShowSettings(value));
-  };
-} */
+export type MainActions = IOnSetShowSettings | IOnSetIsPlay | ChangeTimeTypeActionType | SetCurrentRoundType;

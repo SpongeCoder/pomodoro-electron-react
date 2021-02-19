@@ -7,12 +7,14 @@ export type MainState = {
   isShowSettings: boolean,
   isPlay: boolean,
   typeTime: TimeTypeType,
+  currentRound: number
 }
 
 const defaultState: MainState = {
   isShowSettings: false,
   isPlay: false,
-  typeTime: 'work'
+  typeTime: 'work',
+  currentRound: 1
 }
 
 export function mainReducer(state = defaultState, action: MainActions): MainState {
@@ -31,6 +33,11 @@ export function mainReducer(state = defaultState, action: MainActions): MainStat
       return {
         ...state,
         typeTime: action.value
+      }
+    case TYPES.ON_SET_CURRENT_ROUND:
+      return {
+        ...state,
+        currentRound: action.value
       }
 
     default:

@@ -2,20 +2,20 @@ import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { onSetSound } from '../../reducers/settings/actions';
 import { SettingsState } from '../../reducers/settings/settings';
+import { MainState } from '../../reducers/main/main';
 import './ActionPanel.scss';
 
 type ActionPanelProps = {
-  roundNumber: number,
   onClickReset: () => void,
   onClickNext: () => void,
 }
 
 const ActionPanel = (props: ActionPanelProps) => {
+  const roundNumber = useSelector((state: { main: MainState }) => state.main.currentRound);
   const isSoundOff = useSelector((state: { settings: SettingsState }) => state.settings.isSoundOff);
   const roundCount = useSelector((state: { settings: SettingsState }) => state.settings.roundCount);
   const dispatch = useDispatch();
   const {
-    roundNumber,
     onClickReset,
     onClickNext,
   } = props;
