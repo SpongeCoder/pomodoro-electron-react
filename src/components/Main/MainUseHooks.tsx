@@ -20,13 +20,10 @@ const Main: React.FC = () => {
   const dispatch = useDispatch();
   const timerRef = useRef<number | null>(null);
 
-  const [timeState, setTimeState] = useState({time: 0, percent: 0});
+  const [timeState, setTimeState] = useState({time: 0});
 
   const curTimeRef = useRef(timeState.time);
   curTimeRef.current = timeState.time;
-
-  const percentRef = useRef(timeState.percent);
-  percentRef.current = timeState.percent;
 
   const curRoundRef = useRef(currentRound);
   curRoundRef.current = currentRound;
@@ -42,15 +39,10 @@ const Main: React.FC = () => {
   }, []);
 
   useEffect(() => {
-    setTimeState({
-      time: settingsTime[typeTime],
-      percent: 0
-    });
+    setTimeState({time: settingsTime[typeTime]});
   }, [settingsTime, typeTime])
 
   const onChangeTime = useCallback(() => {
-    const newPercent = 100 - ((curTimeRef.current - 1) / settingsTime[typeTimeRef.current] * 100);
-
     let newType: TimeTypeType = typeTimeRef.current;
     let newRound = curRoundRef.current;
 
@@ -64,23 +56,21 @@ const Main: React.FC = () => {
         newRound += 1;
       }
 
-      dispatch(onChangeTimeType(newType))
-
       if (roundCount === curRoundRef.current && (typeTimeRef.current === 'work') ) {
         newRound = 1;
         dispatch(onSetIsPlay(false));
       }
 
+      dispatch(onChangeTimeType(newType));
       dispatch(onSetCurrentRound(newRound));
     } else {
       setTimeState((prev)=> {
         return {
-          percent: newPercent,
           time: prev.time - 1
         }
       })
     }
-  }, [dispatch, roundCount, roundBigBreakNumber, settingsTime])
+  }, [dispatch, roundCount, roundBigBreakNumber])
 
   useEffect(() => {
     if (!isPlay && timerRef.current) clearInterval(timerRef.current);
@@ -110,21 +100,17 @@ const Main: React.FC = () => {
   }, [currentRound, typeTime, roundBigBreakNumber, roundCount, dispatch]);
 
   const onClickReset = useCallback(() => {
-    console.log('onClickReset')
     dispatch(onSetIsPlay(false));
     dispatch(onChangeTimeType('work'));
     dispatch(onSetCurrentRound(1));
-    setTimeState({time: settingsTime[typeTime], percent: 0})
+    setTimeState({time: settingsTime[typeTime]})
   }, [dispatch, settingsTime, typeTime]);
 
   console.log('render main')
   return (
     <div className="main">
       <Header />
-      <CircleTimer
-        time={timeState.time}
-        percent={timeState.percent}
-      />
+      <CircleTimer time={timeState.time}/>
       <ActionPanel
         onClickReset={onClickReset}
         onClickNext={onClickNext}

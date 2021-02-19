@@ -4,11 +4,11 @@ import './CircleTimer.scss';
 import { clockView } from '../../shared/ClockView';
 import ProgressRing from '../ProgressRing/ProgressRing';
 import { MainState } from '../../reducers/main/main';
+import { SettingsState } from '../../reducers/settings/settings';
 import { onSetIsPlay } from '../../reducers/main/actions';
 
 type CircleTimerProps = {
   time: number,
-  percent: number,
 }
 
 type TypeValuesType = {
@@ -27,9 +27,10 @@ const colorValues: TypeValuesType = {
   big: '#ffd43b'
 }
 
-const CircleTimer = ({time, percent}: CircleTimerProps) => {
+const CircleTimer = ({time}: CircleTimerProps) => {
   const type = useSelector((state: { main: MainState }) => state.main.typeTime);
   const isPlay = useSelector((state: { main: MainState }) => state.main.isPlay);
+  const settingsTime = useSelector((state: { settings: SettingsState }) => state.settings.time);
   const dispatch = useDispatch();
 
   const onClickPause = () => {
@@ -41,7 +42,9 @@ const CircleTimer = ({time, percent}: CircleTimerProps) => {
   }
 
   const viewTime = clockView(time);
-  console.log('render circle timer');
+  const percent = 100 - (time / settingsTime[type] * 100);
+
+  console.log('render time')
   return (
     <div className="cr-timer">
       <div className="cr-timer__ring">
