@@ -1,13 +1,13 @@
 import React from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import './CircleTimer.scss';
 import { clockView } from '../../shared/ClockView';
 import ProgressRing from '../ProgressRing/ProgressRing';
+import { MainState } from '../../reducers/main/main';
 
 type CircleTimerProps = {
   time: number,
   percent: number,
-  type: string,
-  isPlay: boolean,
   onClickPlay: () => void,
   onClickPause: () => void,
 }
@@ -19,7 +19,7 @@ type TypeValuesType = {
 const typeValues: TypeValuesType = {
   work: 'Работа',
   small: 'Перерыв',
-  big: 'Боль. перерыв'
+  big: 'Большой перерыв'
 }
 
 const colorValues: TypeValuesType = {
@@ -29,11 +29,13 @@ const colorValues: TypeValuesType = {
 }
 
 const CircleTimer = (props: CircleTimerProps) => {
+  const type = useSelector((state: { main: MainState }) => state.main.typeTime);
+  const isPlay = useSelector((state: { main: MainState }) => state.main.isPlay);
+  const dispatch = useDispatch();
+
   const {
     time,
     percent,
-    type,
-    isPlay,
     onClickPlay,
     onClickPause,
   } = props;

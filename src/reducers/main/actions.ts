@@ -26,9 +26,9 @@ export function onSetIsPlay(value: boolean): IOnSetIsPlay {
 
 export type ChangeTimeTypeActionType = {
   type: typeof TYPES.ON_CHANGE_TYPE_TIME,
-  value: string
+  value: 'work' | 'small' | 'big'
 }
-export function onChangeTimeType(value: string): ChangeTimeTypeActionType {
+export function onChangeTimeType(value: 'work' | 'small' | 'big'): ChangeTimeTypeActionType {
   return {
     type: TYPES.ON_CHANGE_TYPE_TIME,
     value

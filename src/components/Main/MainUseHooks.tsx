@@ -1,19 +1,16 @@
 import React, { useState, useRef, useEffect, useCallback } from 'react';
-// import { Dispatch } from 'redux';
 import { useDispatch, useSelector } from 'react-redux';
 import Header from '../Header/Header';
 import CircleTimer from '../CircleTimer/CircleTimer';
 import ActionPanel from '../ActionPanel/ActionPanel';
 import Settings from '../Settings/Settings';
 import { onSetIsPlay, onChangeTimeType } from '../../reducers/main/actions';
-// import Timer from '../../shared/Timer';
 import { MainState } from '../../reducers/main/main';
 import { SettingsState } from '../../reducers/settings/settings';
 import './Main.scss';
 
 const Main: React.FC = () => {
   const typeTime = useSelector((state: { main: MainState }) => state.main.typeTime);
-  const isPlay = useSelector((state: { main: MainState }) => state.main.isPlay);
   const settingsTime = useSelector((state: { settings: SettingsState }) => state.settings.time);
   const roundBigBreakNumber = useSelector((state: { settings: SettingsState }) => state.settings.roundBigBreakNumber);
   const roundCount = useSelector((state: { settings: SettingsState }) => state.settings.roundCount);
@@ -132,8 +129,6 @@ const Main: React.FC = () => {
       <CircleTimer
         time={timeState.time}
         percent={timeState.percent}
-        type={typeTime}
-        isPlay={isPlay}
         onClickPlay={onPlay}
         onClickPause={onPause}
       />

@@ -13,7 +13,7 @@ const defaultState: MainState = {
   typeTime: 'work'
 }
 
-export function mainReducer(state = defaultState, action: MainActions) {
+export function mainReducer(state = defaultState, action: MainActions): MainState {
   switch (action.type) {
     case TYPES.ON_SET_SHOW_SETTINGS:
       return {
