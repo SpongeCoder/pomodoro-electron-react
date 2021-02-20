@@ -20,10 +20,10 @@ const Main: React.FC = () => {
   const dispatch = useDispatch();
   const timerRef = useRef<number | null>(null);
 
-  const [timeState, setTimeState] = useState({time: 0});
+  const [timeState, setTimeState] = useState(0);
 
-  const curTimeRef = useRef(timeState.time);
-  curTimeRef.current = timeState.time;
+  const curTimeRef = useRef(timeState);
+  curTimeRef.current = timeState;
 
   const curRoundRef = useRef(currentRound);
   curRoundRef.current = currentRound;
@@ -39,7 +39,7 @@ const Main: React.FC = () => {
   }, []);
 
   useEffect(() => {
-    setTimeState({time: settingsTime[typeTime]});
+    setTimeState(settingsTime[typeTime]);
   }, [settingsTime, typeTime])
 
   const onChangeTime = useCallback(() => {
@@ -64,11 +64,7 @@ const Main: React.FC = () => {
       dispatch(onChangeTimeType(newType));
       dispatch(onSetCurrentRound(newRound));
     } else {
-      setTimeState((prev)=> {
-        return {
-          time: prev.time - 1
-        }
-      })
+      setTimeState((time)=> time - 1)
     }
   }, [dispatch, roundCount, roundBigBreakNumber])
 
@@ -103,14 +99,14 @@ const Main: React.FC = () => {
     dispatch(onSetIsPlay(false));
     dispatch(onChangeTimeType('work'));
     dispatch(onSetCurrentRound(1));
-    setTimeState({time: settingsTime[typeTime]})
+    setTimeState(settingsTime[typeTime])
   }, [dispatch, settingsTime, typeTime]);
 
   console.log('render main')
   return (
     <div className="main">
       <Header />
-      <CircleTimer time={timeState.time}/>
+      <CircleTimer time={timeState}/>
       <ActionPanel
         onClickReset={onClickReset}
         onClickNext={onClickNext}
