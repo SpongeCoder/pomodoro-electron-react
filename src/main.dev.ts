@@ -11,7 +11,7 @@
 import 'core-js/stable';
 import 'regenerator-runtime/runtime';
 import path from 'path';
-import { app, BrowserWindow, shell } from 'electron';
+import { app, BrowserWindow, shell, Tray, Menu } from 'electron';
 import { autoUpdater } from 'electron-updater';
 import log from 'electron-log';
 import MenuBuilder from './menu';
@@ -24,7 +24,7 @@ export default class AppUpdater {
   }
 }
 
-let mainWindow: BrowserWindow | null = null;
+let mainWindow: BrowserWindow;
 
 if (process.env.NODE_ENV === 'production') {
   const sourceMapSupport = require('source-map-support');
@@ -50,6 +50,7 @@ const installExtensions = async () => {
     )
     .catch(console.log);
 };
+
 
 const createWindow = async () => {
   if (
@@ -96,9 +97,9 @@ const createWindow = async () => {
     }
   });
 
-  mainWindow.on('closed', () => {
-    mainWindow = null;
-  });
+  /* mainWindow.on('closed', () => {
+    // mainWindow = null;
+  }); */
 
   const menuBuilder = new MenuBuilder(mainWindow);
   menuBuilder.buildMenu();
@@ -107,6 +108,47 @@ const createWindow = async () => {
   mainWindow.webContents.on('new-window', (event, url) => {
     event.preventDefault();
     shell.openExternal(url);
+  });
+
+  const createTray = () => {
+    const appIcon = new Tray(path.join(__dirname, '/assets/icon.ico'));
+    const contextMenu = Menu.buildFromTemplate([
+        {
+          label: 'Показать',
+          click: () => {
+            mainWindow.show();
+          }
+        },
+        {
+          label: 'Закрыть',
+          click: () => {
+            // app.isQuiting = true;
+            app.quit();
+          }
+        }
+    ]);
+
+    appIcon.on('double-click', () => {
+      mainWindow.show();
+    });
+    appIcon.setToolTip('Tray Tutorial');
+    appIcon.setContextMenu(contextMenu);
+    return appIcon;
+  }
+
+  let tray: Tray;
+  mainWindow.on('minimize', (event: Event) => {
+    event.preventDefault();
+    mainWindow.setSkipTaskbar(true);
+    tray = createTray();
+  });
+
+  mainWindow.on('restore', () => {
+    mainWindow.show();
+    mainWindow.setSkipTaskbar(false);
+    if (tray) {
+      tray.destroy();
+    }
   });
 
   // Remove this if your app does not use auto updates
