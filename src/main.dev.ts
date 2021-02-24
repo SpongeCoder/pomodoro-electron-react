@@ -11,7 +11,7 @@
 import 'core-js/stable';
 import 'regenerator-runtime/runtime';
 import path from 'path';
-import { app, BrowserWindow, shell, Tray, Menu } from 'electron';
+import { app, BrowserWindow, shell, Tray, Menu, ipcMain } from 'electron';
 import { autoUpdater } from 'electron-updater';
 import log from 'electron-log';
 import MenuBuilder from './menu';
@@ -25,6 +25,7 @@ export default class AppUpdater {
 }
 
 let mainWindow: BrowserWindow;
+let tray: Tray;
 
 if (process.env.NODE_ENV === 'production') {
   const sourceMapSupport = require('source-map-support');
@@ -136,19 +137,24 @@ const createWindow = async () => {
     return appIcon;
   }
 
-  let tray: Tray;
+  tray = createTray();
+
   mainWindow.on('minimize', (event: Event) => {
     event.preventDefault();
     mainWindow.setSkipTaskbar(true);
-    tray = createTray();
   });
 
   mainWindow.on('restore', () => {
     mainWindow.show();
     mainWindow.setSkipTaskbar(false);
-    if (tray) {
-      tray.destroy();
-    }
+  });
+
+  ipcMain.on('DISPLAY_BALLON', (_event: Event, data) => {
+    tray.displayBalloon({
+      iconType: 'none',
+      title: 'Pomodoro',
+      content: data
+    });
   });
 
   // Remove this if your app does not use auto updates

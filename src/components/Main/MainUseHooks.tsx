@@ -9,6 +9,8 @@ import { MainState, TimeTypeType } from '../../reducers/main/main';
 import { SettingsState } from '../../reducers/settings/settings';
 import './Main.scss';
 
+const { ipcRenderer } = window.require('electron');
+
 const Main: React.FC = () => {
   const typeTime = useSelector((state: { main: MainState }) => state.main.typeTime);
   const currentRound = useSelector((state: { main: MainState }) => state.main.currentRound);
@@ -45,20 +47,26 @@ const Main: React.FC = () => {
   const onChangeTime = useCallback(() => {
     let newType: TimeTypeType = typeTimeRef.current;
     let newRound = curRoundRef.current;
+    let textBallon = 'Время ';
 
     if (curTimeRef.current === 0) {
       if (curRoundRef.current % roundBigBreakNumber === 0 && typeTimeRef.current === 'work') {
         newType = 'big';
+        textBallon += 'отдохнуть';
       } else if (typeTimeRef.current === 'work') {
         newType = 'small';
+        textBallon += 'передохнуть';
       } else {
         newType = 'work';
+        textBallon += 'вьебывать';
         newRound += 1;
       }
 
       if (roundCount === curRoundRef.current && (typeTimeRef.current === 'work') ) {
         newRound = 1;
         dispatch(onSetIsPlay(false));
+      } else {
+        ipcRenderer.send('DISPLAY_BALLON', textBallon);
       }
 
       dispatch(onChangeTimeType(newType));
@@ -76,13 +84,17 @@ const Main: React.FC = () => {
   const onClickNext = useCallback(() => {
     let newType: TimeTypeType = typeTime;
     let newRound = currentRound;
+    let textBallon = 'Время ';
 
     if (currentRound % roundBigBreakNumber === 0 && typeTime === 'work') {
       newType = 'big';
+      textBallon += 'отдохнуть';
     } else if (typeTime === 'work') {
       newType = 'small';
+      textBallon += 'передохнуть';
     } else {
       newType = 'work';
+      textBallon += 'вьебывать';
       newRound += 1;
     }
 
@@ -93,6 +105,9 @@ const Main: React.FC = () => {
 
     dispatch(onChangeTimeType(newType));
     dispatch(onSetCurrentRound(newRound));
+
+    ipcRenderer.send('DISPLAY_BALLON', textBallon);
+
   }, [currentRound, typeTime, roundBigBreakNumber, roundCount, dispatch]);
 
   const onClickReset = useCallback(() => {
