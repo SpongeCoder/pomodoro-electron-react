@@ -44,7 +44,6 @@ const CircleTimer = ({time}: CircleTimerProps) => {
   const viewTime = clockView(time);
   const percent = 100 - (time / settingsTime[type] * 100);
 
-  console.log('render time')
   return (
     <div className="cr-timer">
       <div className="cr-timer__ring">

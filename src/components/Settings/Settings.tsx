@@ -16,16 +16,12 @@ import { clockView } from '../../shared/ClockView';
 import './Settings.scss';
 
 function Settings() {
-  const isShow = useSelector((state: { main: MainState }) => state.main.isShowSettings);
-  const roundBigBreakNumber = useSelector((state: { settings: SettingsState }) => state.settings.roundBigBreakNumber);
-  const roundCount = useSelector((state: { settings: SettingsState }) => state.settings.roundCount);
-  const workTime = useSelector((state: { settings: SettingsState }) => state.settings.time.work);
-  const smallTime = useSelector((state: { settings: SettingsState }) => state.settings.time.small);
-  const bigTime = useSelector((state: { settings: SettingsState }) => state.settings.time.big);
+  const { isShowSettings } = useSelector((state: { main: MainState }) => state.main);
+  const { roundBigBreakNumber, roundCount, time } = useSelector((state: { settings: SettingsState }) => state.settings);
   const dispatch = useDispatch();
 
   let cn = 'settings';
-  if (isShow) {
+  if (isShowSettings) {
     cn += ' is-show';
   }
 
@@ -58,7 +54,7 @@ function Settings() {
       <Scrollbars className="scrollbar">
         <div className="settings-input">
           <div className="settings-input__title">Work</div>
-          <div className="settings-input__value">{clockView(workTime)}</div>
+          <div className="settings-input__value">{clockView(time.work)}</div>
           <ReactSlider
             className="horizontal-slider horizontal-slider--work"
             thumbClassName="horizontal-slider-thumb"
@@ -66,13 +62,13 @@ function Settings() {
             min={60}
             max={5400}
             step={60}
-            value={workTime}
+            value={time.work}
             onChange={onChangeWorkTime}
           />
         </div>
         <div className="settings-input">
           <div className="settings-input__title">Short break</div>
-          <div className="settings-input__value">{clockView(smallTime)}</div>
+          <div className="settings-input__value">{clockView(time.small)}</div>
           <ReactSlider
             className="horizontal-slider horizontal-slider--short"
             thumbClassName="horizontal-slider-thumb"
@@ -80,13 +76,13 @@ function Settings() {
             min={60}
             max={3600}
             step={60}
-            value={smallTime}
+            value={time.small}
             onChange={onChangeSmallTime}
           />
         </div>
         <div className="settings-input">
           <div className="settings-input__title">Long break</div>
-          <div className="settings-input__value">{clockView(bigTime)}</div>
+          <div className="settings-input__value">{clockView(time.big)}</div>
           <ReactSlider
             className="horizontal-slider horizontal-slider--long"
             thumbClassName="horizontal-slider-thumb"
@@ -94,7 +90,7 @@ function Settings() {
             min={60}
             max={3600}
             step={60}
-            value={bigTime}
+            value={time.big}
             onChange={onChangeBigTime}
           />
         </div>

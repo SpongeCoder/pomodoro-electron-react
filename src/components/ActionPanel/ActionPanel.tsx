@@ -11,9 +11,8 @@ type ActionPanelProps = {
 }
 
 const ActionPanel = (props: ActionPanelProps) => {
-  const roundNumber = useSelector((state: { main: MainState }) => state.main.currentRound);
-  const isSoundOff = useSelector((state: { settings: SettingsState }) => state.settings.isSoundOff);
-  const roundCount = useSelector((state: { settings: SettingsState }) => state.settings.roundCount);
+  const { currentRound } = useSelector((state: { main: MainState }) => state.main);
+  const { isSoundOff, roundCount } = useSelector((state: { settings: SettingsState }) => state.settings);
   const dispatch = useDispatch();
   const {
     onClickReset,
@@ -27,13 +26,11 @@ const ActionPanel = (props: ActionPanelProps) => {
     dispatch(onSetSound(false))
   }
 
-  console.log('render panel');
-
   return (
     <div className="action-panel">
       <div className="action-panel__footer">
         <div className="action-panel__count">
-          <div className="action-panel__count-value">{roundNumber} / {roundCount}</div>
+          <div className="action-panel__count-value">{currentRound} / {roundCount}</div>
           <button type="button" onClick={onClickReset}>
             <i className="las la-redo-alt" />
           </button>

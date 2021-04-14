@@ -11,13 +11,35 @@ import './Main.scss';
 
 const { ipcRenderer } = window.require('electron');
 
+const onShowBallon = (type: TimeTypeType) => {
+  const timeType = {
+    big: 'пойти на большой перерыв',
+    small: 'отдохнуть',
+    work: 'пойти работать'
+  }
+  let text = 'Время ';
+
+  text += timeType[type];
+  ipcRenderer.send('DISPLAY_BALLON', text);
+}
+
+const getNewType = (currentRound: number, roundBigBreakNumber: number, typeTime: TimeTypeType) => {
+  let newType: TimeTypeType;
+
+  if (currentRound % roundBigBreakNumber === 0 && typeTime === 'work') {
+    newType = 'big';
+  } else if (typeTime === 'work') {
+    newType = 'small';
+  } else {
+    newType = 'work';
+  }
+
+  return newType;
+}
+
 const Main: React.FC = () => {
-  const typeTime = useSelector((state: { main: MainState }) => state.main.typeTime);
-  const currentRound = useSelector((state: { main: MainState }) => state.main.currentRound);
-  const settingsTime = useSelector((state: { settings: SettingsState }) => state.settings.time);
-  const roundBigBreakNumber = useSelector((state: { settings: SettingsState }) => state.settings.roundBigBreakNumber);
-  const roundCount = useSelector((state: { settings: SettingsState }) => state.settings.roundCount);
-  const isPlay = useSelector((state: { main: MainState }) => state.main.isPlay);
+  const { typeTime, currentRound, isPlay } = useSelector((state: { main: MainState }) => state.main);
+  const { time, roundBigBreakNumber, roundCount } = useSelector((state: { settings: SettingsState }) => state.settings);
 
   const dispatch = useDispatch();
   const timerRef = useRef<number | null>(null);
@@ -41,38 +63,28 @@ const Main: React.FC = () => {
   }, []);
 
   useEffect(() => {
-    setTimeState(settingsTime[typeTime]);
-  }, [settingsTime, typeTime])
+    setTimeState(time[typeTime]);
+  }, [time, typeTime])
 
   const onChangeTime = useCallback(() => {
     let newType: TimeTypeType = typeTimeRef.current;
     let newRound = curRoundRef.current;
-    let textBallon = 'Время ';
 
     if (curTimeRef.current === 0) {
-      if (curRoundRef.current % roundBigBreakNumber === 0 && typeTimeRef.current === 'work') {
-        newType = 'big';
-        textBallon += 'отдохнуть';
-      } else if (typeTimeRef.current === 'work') {
-        newType = 'small';
-        textBallon += 'передохнуть';
-      } else {
-        newType = 'work';
-        textBallon += 'вьебывать';
-        newRound += 1;
-      }
+      newType = getNewType(curRoundRef.current, roundBigBreakNumber, typeTimeRef.current);
+      if (newType === 'work') newRound += 1;
 
       if (roundCount === curRoundRef.current && (typeTimeRef.current === 'work') ) {
         newRound = 1;
         dispatch(onSetIsPlay(false));
       } else {
-        ipcRenderer.send('DISPLAY_BALLON', textBallon);
+        onShowBallon(newType);
       }
 
       dispatch(onChangeTimeType(newType));
       dispatch(onSetCurrentRound(newRound));
     } else {
-      setTimeState((time)=> time - 1)
+      setTimeState((t)=> t - 1)
     }
   }, [dispatch, roundCount, roundBigBreakNumber])
 
@@ -84,19 +96,9 @@ const Main: React.FC = () => {
   const onClickNext = useCallback(() => {
     let newType: TimeTypeType = typeTime;
     let newRound = currentRound;
-    let textBallon = 'Время ';
 
-    if (currentRound % roundBigBreakNumber === 0 && typeTime === 'work') {
-      newType = 'big';
-      textBallon += 'отдохнуть';
-    } else if (typeTime === 'work') {
-      newType = 'small';
-      textBallon += 'передохнуть';
-    } else {
-      newType = 'work';
-      textBallon += 'вьебывать';
-      newRound += 1;
-    }
+    newType = getNewType(currentRound, roundBigBreakNumber, typeTime);
+    if (newType === 'work') newRound += 1;
 
     if (roundCount === currentRound && (typeTime === 'small' || typeTime === 'big') ) {
       newRound = 1;
@@ -105,19 +107,16 @@ const Main: React.FC = () => {
 
     dispatch(onChangeTimeType(newType));
     dispatch(onSetCurrentRound(newRound));
-
-    ipcRenderer.send('DISPLAY_BALLON', textBallon);
-
+    onShowBallon(newType);
   }, [currentRound, typeTime, roundBigBreakNumber, roundCount, dispatch]);
 
   const onClickReset = useCallback(() => {
     dispatch(onSetIsPlay(false));
     dispatch(onChangeTimeType('work'));
     dispatch(onSetCurrentRound(1));
-    setTimeState(settingsTime[typeTime])
-  }, [dispatch, settingsTime, typeTime]);
+    setTimeState(time[typeTime]);
+  }, [dispatch, time, typeTime]);
 
-  console.log('render main')
   return (
     <div className="main">
       <Header />

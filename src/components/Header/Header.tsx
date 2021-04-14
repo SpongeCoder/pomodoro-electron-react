@@ -17,17 +17,16 @@ const minimizeApp = () => {
 
 const Header = () => {
   const dispatch = useDispatch();
-  const isShowSettings = useSelector((state: { main: MainState }) => state.main.isShowSettings);
+  const { isShowSettings } = useSelector((state: { main: MainState }) => state.main);
 
-  const onToggleSettings = () => {
+  const onToggleShowSettings = () => {
     dispatch(onSetShowSettings(!isShowSettings))
   }
 
-  console.log('render header')
   return (
     <div className="header">
       <div className="header__left">
-        <button type="button" title={isShowSettings ? 'Назад' : 'Настройки'} onClick={onToggleSettings}>
+        <button type="button" title={isShowSettings ? 'Назад' : 'Настройки'} onClick={onToggleShowSettings}>
           {
             !isShowSettings &&
             <i className="las la-sliders-h" />
